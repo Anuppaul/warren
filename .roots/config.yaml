@@ -1,0 +1,20 @@
+project: "warren"
+version: "1"
+tier: 2                    # 0 off, 1 ask, 2 propose, 3 observe
+agent:
+  command: "claude -p --model claude-opus-5-5"   # used by `think` to get questions
+  timeoutSeconds: 120      # think continues without agent questions after this
+limits:
+  proposals: 10            # max pending proposals
+  sprouts: 5               # max open sprouts
+  questionsPerSession: 3
+  proposalTtlDays: 14
+  sproutTtlDays: 30
+questions:                 # thresholds for deterministic question rules
+  doneAfterSessions: 1     # missing-done: ask from the Nth think session on
+  bigBodyLines: 30         # too-big: body longer than N lines
+  orphanAfterDays: 3       # orphan: no edges N days after planting
+  staleAfterDays: 30       # stale: committed, untouched for N days
+  snoozeDays: 7            # [z] in think hides a question for N days
+view:
+  write: false             # true: `roots view` also writes ROOTS.md

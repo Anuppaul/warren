@@ -20,3 +20,4 @@
 .seeds/templates.jsonl merge=seeds-jsonl
 .seeds/plans.jsonl merge=seeds-jsonl
 .mulch/expertise/*.jsonl merge=seeds-jsonl
+.roots/*.jsonl merge=union
