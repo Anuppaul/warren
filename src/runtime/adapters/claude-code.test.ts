@@ -144,6 +144,30 @@ describe("claudeCodeAdapter.prepareWorkspace", () => {
 		expect(parsed).toMatchObject({ permissions: {}, hooks: {} });
 	});
 
+	test('installs mulch\'s SessionStart + PreToolUse hooks under the mulch "on" arm', async () => {
+		await claudeCodeAdapter.prepareWorkspace?.({
+			runId: "run_test",
+			workspacePath: dir,
+			frontmatter: { mulch: "on" },
+		});
+		const parsed = JSON.parse(await readFile(join(dir, CLAUDE_CODE_SETTINGS_PATH), "utf8"));
+		expect(parsed.hooks.SessionStart[0].hooks[0].command).toBe("ml prime");
+		expect(parsed.hooks.PreToolUse[0]).toEqual({
+			matcher: "Read|Edit|Write|MultiEdit|NotebookEdit|Bash",
+			hooks: [{ type: "command", command: "ml hook" }],
+		});
+	});
+
+	test('keeps hooks empty under the mulch "off" arm', async () => {
+		await claudeCodeAdapter.prepareWorkspace?.({
+			runId: "run_test",
+			workspacePath: dir,
+			frontmatter: { mulch: "off" },
+		});
+		const parsed = JSON.parse(await readFile(join(dir, CLAUDE_CODE_SETTINGS_PATH), "utf8"));
+		expect(parsed.hooks).toEqual({});
+	});
+
 	test("plants .sandbox-tmp/ + a `*` .gitignore (burrow-8452)", async () => {
 		await claudeCodeAdapter.prepareWorkspace?.({ runId: "run_test", workspacePath: dir });
 		const fs = await import("node:fs");

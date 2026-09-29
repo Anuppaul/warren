@@ -11,6 +11,7 @@ import type { SpawnFn as ProjectSpawnFn } from "../../projects/clone.ts";
 import type { ProjectsConfig } from "../../projects/config.ts";
 import type { refreshProject } from "../../projects/manage.ts";
 import type { AgentDefinition } from "../../registry/schema.ts";
+import type { MulchArm } from "../../runtime/adapters/mulch-arm.ts";
 import type { RuntimeProvider } from "../../runtime/contract.ts";
 import type { SeedsCliDeps } from "../../seeds-cli/index.ts";
 import type { WarrenConfigCache } from "../../warren-config/index.ts";
@@ -112,6 +113,11 @@ export interface SpawnRunInput {
 	 * `.warren/config.yaml` `maxCostUsd` default) still applies.
 	 */
 	readonly maxCostUsdOverride?: number;
+	/**
+	 * Mulch experiment arm (`src/runtime/adapters/mulch-arm.ts`), folded onto
+	 * `frontmatter.mulch`. Omitted = default behavior, unchanged.
+	 */
+	readonly mulchArm?: MulchArm;
 	readonly now?: () => Date;
 	/**
 	 * Refresh the project's on-disk clone before provisioning burrow.

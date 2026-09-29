@@ -114,6 +114,20 @@ describe("WarrenClient", () => {
 		expect(fetched).toBe(false);
 	});
 
+	test("dispatch forwards the mulch experiment arm on the POST /runs body", async () => {
+		let observedBody: string | undefined;
+		const stubFetch = stub(async (_input, init) => {
+			observedBody = init?.body as string;
+			return jsonResponse(201, { run: { id: "r1" }, sandbox: { id: "b1" } });
+		});
+		const client = new WarrenClient({
+			config: { baseUrl: "https://warren.local" },
+			fetch: stubFetch,
+		});
+		await client.dispatch({ agent: "claude-code", project: "p1", prompt: "hi", mulch: "off" });
+		expect(JSON.parse(observedBody ?? "{}").mulch).toBe("off");
+	});
+
 	test("performs cancelRun request with reason", async () => {
 		let observedUrl: string | undefined;
 		let observedMethod: string | undefined;

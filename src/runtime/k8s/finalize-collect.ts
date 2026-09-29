@@ -24,6 +24,7 @@ import type {
 	FinalizeStageOutcome,
 } from "../contract.ts";
 import { finalizeCommitStage, finalizeMergeStage } from "../contract.ts";
+import { collectMulchUsageEvent } from "../mulch-usage.ts";
 import { PUSH_REJECTED_EVENT, parsePushRejection } from "../push-rejection.ts";
 import type { InPodFinalizeIntent } from "./finalize-wire.ts";
 
@@ -396,6 +397,9 @@ export async function collectFinalizeResult(
 		plans = await collectPlansDelta(workspacePath, deps.fs);
 		trail.ok(finalizeMergeStage("plans"));
 	}
+	// Mulch usage attribution (fail-open): which records the hook injected.
+	const mulchUsage = await collectMulchUsageEvent(workspacePath, (p) => readFileOrNull(deps.fs, p));
+	if (mulchUsage !== null) collector.events.push(mulchUsage);
 
 	// Bookkeeping commits are a warren-side apply concern in K8s (no in-pod clone).
 	const workspacePlansBody = await readFileOrNull(

@@ -1,6 +1,14 @@
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import type { AgentDefinition } from "../../registry/schema.ts";
 import type { IssueTracker } from "../../tracker/contract.ts";
-import { resolvePromptCapabilities } from "./prompt-capabilities.ts";
+import {
+	gateAgentPrompts,
+	resolvePromptCapabilities,
+	withMulchArm,
+} from "./prompt-capabilities.ts";
 
 const GIT_NATIVE_TRACKER: IssueTracker = {
 	capabilities: {
@@ -69,5 +77,37 @@ describe("resolvePromptCapabilities", () => {
 			exists: () => true,
 		});
 		expect(caps.tracker).toBe(false);
+	});
+});
+
+describe("mulch experiment arm", () => {
+	const AGENT: AgentDefinition = {
+		name: "claude-code",
+		version: 1,
+		sections: { system: "core" },
+		resolvedFrom: [],
+		frontmatter: {},
+		gatedPrompts: { mulch: "MULCH FRAGMENT" },
+	};
+
+	test("withMulchArm folds the arm onto frontmatter and leaves the agent alone when unset", () => {
+		expect(withMulchArm(AGENT, undefined)).toBe(AGENT);
+		expect(withMulchArm(AGENT, "off").frontmatter).toEqual({ mulch: "off" });
+		expect(AGENT.frontmatter).toEqual({});
+	});
+
+	test('gateAgentPrompts drops the mulch fragment under "off" even when .mulch/ exists', () => {
+		const dir = mkdtempSync(join(tmpdir(), "warren-mulch-arm-"));
+		try {
+			mkdirSync(join(dir, ".mulch"));
+			const project = { hasSeeds: false, localPath: dir };
+			expect(gateAgentPrompts(AGENT, project).sections.system).toContain("MULCH FRAGMENT");
+			expect(gateAgentPrompts(withMulchArm(AGENT, "on"), project).sections.system).toContain(
+				"MULCH FRAGMENT",
+			);
+			expect(gateAgentPrompts(withMulchArm(AGENT, "off"), project).sections.system).toBe("core");
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
 	});
 });

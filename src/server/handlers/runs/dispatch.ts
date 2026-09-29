@@ -4,12 +4,13 @@ import { readProviderFrontmatter } from "../../../registry/schema.ts";
 import { validateBaseCommit, validateDispatchRef } from "../../../runs/base-commit.ts";
 import { readMaxCostUsd } from "../../../runs/cost-cap.ts";
 import { spawnRun } from "../../../runs/index.ts";
+import { MULCH_ARM_VALUES } from "../../../runtime/adapters/mulch-arm.ts";
 import type { TrackerContext } from "../../../tracker/contract.ts";
 import type { GitSpawnCredential } from "../../../workspace/git/credential-env.ts";
 import type { IdempotentDispatch } from "../../idempotency.ts";
 import { jsonResponse } from "../../response.ts";
 import type { RouteHandler, ServerDeps } from "../../types.ts";
-import { optionalObject, optionalPositiveNumber } from "../body-fields.ts";
+import { optionalEnum, optionalObject, optionalPositiveNumber } from "../body-fields.ts";
 import { defaultSpawn, optionalString, readJsonBody, requireString } from "../index.ts";
 
 /**
@@ -302,6 +303,8 @@ async function buildHttpSpawnOptions(
 	// warren-97a2: the HTTP-collapsed `warren run` labels its dispatches
 	// trigger=cli; omitting the field preserves the spawnRun default.
 	const trigger = optionalString(body, "trigger");
+	// Mulch experiment arm ("on" | "off"); omitted keeps default behavior.
+	const mulchArm = optionalEnum(body, "mulch", MULCH_ARM_VALUES);
 	const {
 		agentName,
 		projectId,
@@ -344,6 +347,7 @@ async function buildHttpSpawnOptions(
 		modelOverride,
 		...(trigger !== undefined ? { trigger } : {}),
 		...(maxCostUsd !== undefined ? { maxCostUsdOverride: maxCostUsd } : {}),
+		...(mulchArm !== undefined ? { mulchArm } : {}),
 		seedId,
 		...(targetBranch !== undefined ? { targetBranch } : {}),
 		...(effectiveExistingBranch !== undefined ? { existingBranch: effectiveExistingBranch } : {}),
