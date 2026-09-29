@@ -1,0 +1,12 @@
+{"type":"node","id":"r-c818","kind":"idea","slug":"team-agent-platform","status":"shaping","author":"human:jaymin-west","createdAt":"2026-09-28T22:04:06Z","updatedAt":"2026-09-28T22:08:03Z"}
+{"type":"node","id":"s-e730","kind":"sprout","slug":"per-person-credentials","status":"adopted","author":"agent:claude-opus-5-5","createdAt":"2026-09-28T22:09:13Z","updatedAt":"2026-09-28T22:15:06Z","expiresAt":"2026-10-28T22:09:13Z","decidedBy":"human:jaymin-west","decidedAt":"2026-09-28T22:15:06Z"}
+{"type":"node","id":"s-ebae","kind":"sprout","slug":"run-attribution-triple","status":"adopted","author":"agent:claude-opus-5-5","createdAt":"2026-09-28T22:09:13Z","updatedAt":"2026-09-28T22:10:45Z","expiresAt":"2026-10-28T22:09:13Z","decidedBy":"human:jaymin-west","decidedAt":"2026-09-28T22:10:45Z"}
+{"type":"node","id":"s-62c5","kind":"sprout","slug":"no-secrets-in-sandbox","status":"adopted","author":"agent:claude-opus-5-5","createdAt":"2026-09-28T22:09:13Z","updatedAt":"2026-09-28T22:13:16Z","expiresAt":"2026-10-28T22:09:13Z","decidedBy":"human:jaymin-west","decidedAt":"2026-09-28T22:13:16Z"}
+{"type":"node","id":"r-0c3e","kind":"idea","slug":"every-run-records-agent","status":"planted","author":"human:jaymin-west","createdAt":"2026-09-28T22:10:45Z","updatedAt":"2026-09-28T22:10:45Z"}
+{"type":"node","id":"r-7e52","kind":"idea","slug":"no-long-lived-secret","status":"shaping","author":"human:jaymin-west","createdAt":"2026-09-28T22:13:16Z","updatedAt":"2026-09-28T22:21:00Z"}
+{"type":"node","id":"r-506b","kind":"idea","slug":"users-warren-need-their","status":"planted","author":"human:jaymin-west","createdAt":"2026-09-28T22:15:06Z","updatedAt":"2026-09-28T22:15:06Z"}
+{"type":"edge","id":"e-87be","from":"r-0c3e","to":"s-ebae","rel":"derives","by":"human:jaymin-west","createdAt":"2026-09-28T22:10:45Z"}
+{"type":"edge","id":"e-679a","from":"r-7e52","to":"s-62c5","rel":"derives","by":"human:jaymin-west","createdAt":"2026-09-28T22:13:16Z"}
+{"type":"edge","id":"e-d09e","from":"r-0c3e","to":"r-c818","rel":"serves","by":"human:jaymin-west","proposedBy":"agent:claude-opus-5-5","proposal":"p-1060","createdAt":"2026-09-28T22:14:32Z"}
+{"type":"edge","id":"e-14c4","from":"r-7e52","to":"r-c818","rel":"serves","by":"human:jaymin-west","proposedBy":"agent:claude-opus-5-5","proposal":"p-807d","createdAt":"2026-09-28T22:14:39Z"}
+{"type":"edge","id":"e-28c6","from":"r-506b","to":"s-e730","rel":"derives","by":"human:jaymin-west","createdAt":"2026-09-28T22:15:06Z"}
