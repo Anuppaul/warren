@@ -20,6 +20,7 @@ import {
 	withGatedPromptFragments,
 } from "../../registry/prompt-gating.ts";
 import type { AgentDefinition } from "../../registry/schema.ts";
+import { type MulchArm, readMulchArm } from "../../runtime/adapters/mulch-arm.ts";
 import type { IssueTracker } from "../../tracker/contract.ts";
 
 export function resolvePromptCapabilities(input: {
@@ -49,12 +50,22 @@ export function gateAgentPrompts(
 	project: { readonly hasSeeds: boolean; readonly localPath: string },
 	tracker?: IssueTracker,
 ): AgentDefinition {
-	return withGatedPromptFragments(
-		agent,
-		resolvePromptCapabilities({
-			hasSeeds: project.hasSeeds,
-			localPath: project.localPath,
-			...(tracker !== undefined ? { tracker } : {}),
-		}),
-	);
+	const caps = resolvePromptCapabilities({
+		hasSeeds: project.hasSeeds,
+		localPath: project.localPath,
+		...(tracker !== undefined ? { tracker } : {}),
+	});
+	// Mulch arm "off" drops the mulch fragment even when `.mulch/` exists.
+	const mulchOff = readMulchArm(agent.frontmatter) === "off";
+	return withGatedPromptFragments(agent, mulchOff ? { ...caps, mulch: false } : caps);
+}
+
+/**
+ * Fold the per-run mulch experiment arm onto `frontmatter.mulch` so it is
+ * frozen on `rendered_agent_json` and reaches the adapter. `undefined`
+ * leaves the agent's own frontmatter untouched.
+ */
+export function withMulchArm(agent: AgentDefinition, arm: MulchArm | undefined): AgentDefinition {
+	if (arm === undefined) return agent;
+	return { ...agent, frontmatter: { ...agent.frontmatter, mulch: arm } };
 }

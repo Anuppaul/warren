@@ -27,6 +27,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { forwardClaudeHostCredentials } from "./claude-credentials.ts";
+import { mulchClaudeHooks, readMulchArm } from "./mulch-arm.ts";
 import { parseJsonlClaude } from "./parsers/jsonl-claude.ts";
 import type {
 	AdapterPrepareContext,
@@ -116,9 +117,14 @@ export const claudeCodeAdapter: AgentRuntimeAdapter = {
 	async prepareWorkspace(ctx: AdapterPrepareContext): Promise<void> {
 		const claudeDir = join(ctx.workspacePath, ".claude");
 		mkdirSync(claudeDir, { recursive: true });
+		// Mulch arm "on" installs mulch's hooks (`./mulch-arm.ts`); absent/"off" keeps `hooks: {}`.
+		const settings =
+			readMulchArm(ctx.frontmatter) === "on"
+				? { ...DEFAULT_SETTINGS, hooks: mulchClaudeHooks() }
+				: DEFAULT_SETTINGS;
 		writeFileSync(
 			join(ctx.workspacePath, CLAUDE_CODE_SETTINGS_PATH),
-			`${JSON.stringify(DEFAULT_SETTINGS, null, 2)}\n`,
+			`${JSON.stringify(settings, null, 2)}\n`,
 			{ encoding: "utf8", flag: "w" },
 		);
 		ensureBurrowTmpdir(ctx.workspacePath);

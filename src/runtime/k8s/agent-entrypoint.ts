@@ -259,6 +259,7 @@ export async function runAgent(
 		await runtime.prepareWorkspace({
 			runId: env.runId,
 			workspacePath: env.workspacePath,
+			frontmatter: ctx.frontmatter,
 		});
 	}
 	if (runtime.buildSpawnCommand === undefined) {

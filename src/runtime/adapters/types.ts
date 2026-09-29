@@ -236,6 +236,8 @@ export interface AgentFrontmatter {
 	provider?: string;
 	model?: string;
 	pi?: PiFrontmatterOptions;
+	/** Mulch experiment arm (`./mulch-arm.ts`); absent = default behavior. */
+	mulch?: "on" | "off";
 }
 
 /**
@@ -262,6 +264,8 @@ export interface AdapterSpawnContext {
 export interface AdapterPrepareContext {
 	readonly runId: string;
 	readonly workspacePath: string;
+	/** Per-run frontmatter (see {@link AgentFrontmatter}); carries the mulch arm. */
+	readonly frontmatter?: AgentFrontmatter;
 }
 
 /** Input to `extractMetadata`. */

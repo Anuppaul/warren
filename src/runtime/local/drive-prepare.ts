@@ -127,8 +127,13 @@ export async function prepareSpawn(
 	}
 
 	const pendingMessages = store.claimPending(record, deps.now);
+	const frontmatter = readSpecFrontmatter(spec.metadata);
 	if (runtime.prepareWorkspace !== undefined) {
-		await runtime.prepareWorkspace({ runId: spec.runId, workspacePath: record.workspacePath });
+		await runtime.prepareWorkspace({
+			runId: spec.runId,
+			workspacePath: record.workspacePath,
+			frontmatter,
+		});
 	}
 	// warren-c865: with $HOME a real per-run directory, forward the host's
 	// claude OAuth blob into it so auth resolves via $HOME lookup.
@@ -137,7 +142,6 @@ export async function prepareSpawn(
 	}
 
 	const useStdinHold = typeof runtime.shouldCloseStdinOnEvent === "function";
-	const frontmatter = readSpecFrontmatter(spec.metadata);
 	const baseCommand = runtime.buildSpawnCommand({
 		runId: spec.runId,
 		prompt: spec.prompt,

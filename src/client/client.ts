@@ -242,6 +242,7 @@ export class WarrenClient {
 		if (input.cloneFromRunId !== undefined) body.cloneFromRunId = input.cloneFromRunId;
 		if (input.rescueFromRunId !== undefined) body.rescueFromRunId = input.rescueFromRunId;
 		if (input.maxCostUsd !== undefined) body.maxCostUsd = input.maxCostUsd;
+		if (input.mulch !== undefined) body.mulch = input.mulch;
 		return this.createRun(body);
 	}
 

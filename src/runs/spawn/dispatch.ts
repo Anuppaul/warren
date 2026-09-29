@@ -30,7 +30,7 @@ import { resolveContinuationRef, resolveExistingBranch } from "./continuation.ts
 import { writeDispatchContext } from "./dispatch-context.ts";
 import { injectGitIdentityEnv, warnIfGitIdentityUnconfigured } from "./git-identity.ts";
 import { healMigrationJournalCollisions, recordMigrationHealEvent } from "./migration-preflight.ts";
-import { gateAgentPrompts } from "./prompt-capabilities.ts";
+import { gateAgentPrompts, withMulchArm } from "./prompt-capabilities.ts";
 import { assertNoKnownProviderModelMismatch } from "./provider-model.ts";
 import {
 	bindRunLogger,
@@ -151,12 +151,15 @@ async function dispatchRun(input: SpawnRunInput): Promise<SpawnRunResult> {
 	// warren-cb46: gate tracker/mulch prompt fragments on the project's real
 	// capabilities before anything freezes the agent (prompt-capabilities.ts).
 	const agent = gateAgentPrompts(
-		withMaxCostUsdOverride(
-			withProviderOverrides(baseAgent, {
-				...(effectiveProvider !== undefined ? { providerOverride: effectiveProvider } : {}),
-				...(effectiveModel !== undefined ? { modelOverride: effectiveModel } : {}),
-			}),
-			capOverride,
+		withMulchArm(
+			withMaxCostUsdOverride(
+				withProviderOverrides(baseAgent, {
+					...(effectiveProvider !== undefined ? { providerOverride: effectiveProvider } : {}),
+					...(effectiveModel !== undefined ? { modelOverride: effectiveModel } : {}),
+				}),
+				capOverride,
+			),
+			input.mulchArm,
 		),
 		projectAfterRefresh,
 		input.issueTracker,
