@@ -36,7 +36,8 @@ describe("resolveAnalyticsWindow", () => {
 
 	test("defaults to to now when only from is supplied", () => {
 		const before = Date.now();
-		const from = "2026-07-01T00:00:00.000Z";
+		// Relative to now: a fixed date drifts past the 90-day clamp and fails.
+		const from = new Date(before - 7 * DAY_MS).toISOString();
 		const w = resolveAnalyticsWindow(from, undefined);
 		expect(w.from).toBe(from);
 		expect(Date.parse(w.to)).toBeGreaterThanOrEqual(before);
