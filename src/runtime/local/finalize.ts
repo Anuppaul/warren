@@ -54,6 +54,7 @@ import type {
 } from "../contract.ts";
 import { finalizeCommitStage, finalizeMergeStage } from "../contract.ts";
 import { RuntimeProviderError } from "../errors.ts";
+import { collectMulchUsageEvent } from "../mulch-usage.ts";
 import { PUSH_REJECTED_EVENT, parsePushRejection } from "../push-rejection.ts";
 import { finalizeSeedReset } from "./finalize-seed-reset.ts";
 
@@ -150,6 +151,9 @@ export async function finalizeLocalWorkspace(
 	const plans = artifacts.has("plans")
 		? await finalizePlans(target, clonePath, fs, trail, collector)
 		: undefined;
+	// Mulch usage attribution: which records the hook injected (fail-open).
+	const mulchUsage = await collectMulchUsageEvent(workspacePath, fs.readFile);
+	if (mulchUsage !== null) collector.events.push(mulchUsage);
 
 	// Snapshot the workspace plans.jsonl BEFORE the seeds commit copies the
 	// clone-union over it — this is exactly what reap's `snapshotWorkspacePlans`
