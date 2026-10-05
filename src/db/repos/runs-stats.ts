@@ -8,6 +8,7 @@
  */
 
 import { and, eq, inArray, sql } from "drizzle-orm";
+import { AUTOMATIC_RUN_TRIGGERS } from "../../triggers/automatic-capacity.ts";
 import type { SqliteDrizzleDb } from "../client.ts";
 import { RUN_STATES, type RunState } from "../schema.ts";
 import type { DrizzleAdapter } from "./drizzle-adapter.ts";
@@ -65,6 +66,24 @@ export async function countNonTerminal(
 			.select({ count: sql<number>`count(*)`.as("count") })
 			.from(runs)
 			.where(where),
+	);
+	return Number(row?.count ?? 0);
+}
+
+/** Count queued/running runs from automatic triggers only; manual work is operator-controlled. */
+export async function countNonTerminalAutomatic(adapter: DrizzleAdapter): Promise<number> {
+	const db = adapter.drizzle as SqliteDrizzleDb;
+	const runs = adapter.schema.runs;
+	const [row] = await adapter.pickAll<{ count: number | string }>(
+		db
+			.select({ count: sql<number>`count(*)`.as("count") })
+			.from(runs)
+			.where(
+				and(
+					inArray(runs.state, [...NON_TERMINAL_STATES]),
+					inArray(runs.trigger, [...AUTOMATIC_RUN_TRIGGERS]),
+				),
+			),
 	);
 	return Number(row?.count ?? 0);
 }
