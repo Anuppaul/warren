@@ -137,14 +137,17 @@ Prefix with `fix:`, `feat:`, or `docs:` when the category is clear. Plain descri
 
 ## Pull Request Expectations
 
+- **Claim the issue first.** Comment on the issue before you open a PR, and wait for a maintainer to assign it. We close a PR that has no claim. We also close a PR for an issue that someone else has claimed.
 - **One concern per PR.** Keep changes focused -- a bug fix, a feature, a refactor. Not all three.
 - **Tests required.** New features and bug fixes should include tests. See the testing conventions above.
-- **Passing CI.** All PRs must pass the full `bun run check:all` gate manifest before merge.
+- **Run the gates before you open the PR.** `bun run check:all` must exit zero on your branch. Do not use CI as your first test run. We convert a PR with failing CI to a draft. If CI is still red after 7 days, we close it.
+- **Disclose agent use.** If an AI coding agent wrote some or all of the change, tick the box in the PR template and name the tool. Agent-written PRs are welcome. We ask so that every change has a named principal.
+- **A human answers review.** You are responsible for the PR, not your agent. A person must reply to review comments. We close a PR when review comments get no reply for 7 days.
 - **Description.** Briefly explain what the PR does and why. Link to any relevant issues.
 
 ## Finding Work
 
-New to the project? Filter the [GitHub issue tracker](https://github.com/jayminwest/warren/issues) by the `good first issue` label for scoped, newcomer-friendly tasks.
+New to the project? Filter the [GitHub issue tracker](https://github.com/jayminwest/warren/issues) by the `good first issue` label for scoped, newcomer-friendly tasks. Claim an issue before you start work on it (see above).
 
 ## Reporting Issues
 
