@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import type { RunEvent } from "../api/types.ts";
 import {
 	appendRunEvent,
-	runEventStreamLoop,
-	streamStateForRun,
 	type EventStreamState,
+	runEventStreamLoop,
 	type StreamStatus,
+	streamStateForRun,
 } from "./use-event-stream.helpers.ts";
 
 /**

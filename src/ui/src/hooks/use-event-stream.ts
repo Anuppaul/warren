@@ -6,8 +6,8 @@ import {
 	type EventStreamLoopDeps,
 	type EventStreamState,
 	runEventStreamLoop,
-	streamStateForRun,
 	type StreamStatus,
+	streamStateForRun,
 } from "@/hooks/use-event-stream.helpers.ts";
 
 interface State {
@@ -76,9 +76,7 @@ export function useEventStream(runId: string, follow: boolean): State {
 					return events === current.events ? current : { ...current, events };
 				}),
 			onStatus: (status, error) =>
-				setState((current) =>
-					current.runId === runId ? { ...current, status, error } : current,
-				),
+				setState((current) => (current.runId === runId ? { ...current, status, error } : current)),
 		};
 		void runEventStreamLoop(deps);
 
