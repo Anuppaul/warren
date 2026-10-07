@@ -15,6 +15,16 @@ export interface FilterState {
 	readonly rangeId: string;
 }
 
+/**
+ * Read one-way deep-link state from the Event explorer query string.
+ * A run deep link is unbounded by default so an older run cannot be
+ * hidden by the page's normal 24h window.
+ */
+export function readExplorerSearchParams(params: URLSearchParams): Partial<FilterState> {
+	const runId = params.get("runId")?.trim();
+	return runId ? { runId, rangeId: "all" } : {};
+}
+
 /** Build the API filter object from the strip's UI state. */
 export function buildFilter(state: FilterState): EventsQueryFilterUI {
 	const filter: EventsQueryFilterUI = {};
