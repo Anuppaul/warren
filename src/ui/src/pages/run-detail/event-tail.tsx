@@ -146,11 +146,13 @@ function EventRow({ event }: { event: RunEvent }) {
 }
 
 export function EventTail({
+	runId,
 	events,
 	status,
 	error,
 	terminal,
 }: {
+	runId: string;
 	events: RunEvent[];
 	status: string;
 	error: string | null;
@@ -271,7 +273,7 @@ export function EventTail({
 				</span>
 				<span className="flex-1" />
 				<Link
-					to="/events"
+					to={`/events?runId=${encodeURIComponent(runId)}`}
 					className="text-[11px] leading-[14px] font-medium text-(--color-primary) hover:underline"
 				>
 					Full stream →

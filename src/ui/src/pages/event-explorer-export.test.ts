@@ -1,5 +1,27 @@
 import { describe, expect, test } from "bun:test";
-import { buildFilter, collectExportLines, EXPORT_MAX_ROWS } from "./event-explorer-export.ts";
+import {
+	buildFilter,
+	collectExportLines,
+	EXPORT_MAX_ROWS,
+	readExplorerSearchParams,
+} from "./event-explorer-export.ts";
+
+describe("readExplorerSearchParams", () => {
+	test("seeds run id and an unbounded range from a deep link", () => {
+		expect(readExplorerSearchParams(new URLSearchParams("runId=run_x"))).toEqual({
+			runId: "run_x",
+			rangeId: "all",
+		});
+	});
+
+	test("returns no overrides when runId is missing", () => {
+		expect(readExplorerSearchParams(new URLSearchParams("kind=toolcall"))).toEqual({});
+	});
+
+	test("ignores an empty runId", () => {
+		expect(readExplorerSearchParams(new URLSearchParams("runId="))).toEqual({});
+	});
+});
 
 describe("buildFilter", () => {
 	test("returns an empty filter for the default strip state", () => {

@@ -418,6 +418,7 @@ export function RunDetailPage() {
 			<div className="flex min-h-0 flex-1 flex-col gap-3 xl:h-full xl:min-h-0 xl:flex-row xl:overflow-hidden">
 				<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 order-3 md:order-none">
 					<EventTail
+						runId={r.id}
 						events={stream.events}
 						status={stream.status}
 						error={stream.error}
