@@ -112,12 +112,14 @@ export interface PullRequestState {
 /* --------------------------------------------------------------------- */
 
 /**
- * The merge method the forge applies when auto-merge completes. The
- * domain resolves the project default (`squash`) before the call — the
- * seam carries resolved intent, like `PullRequestDraft` carries finished
- * text.
+ * The merge methods GitHub's `enablePullRequestAutoMerge` accepts, as the
+ * CLOSED vocabulary the forge seam carries. The domain resolves the project
+ * default (`squash`) before the call — the seam carries resolved intent,
+ * like `PullRequestDraft` carries finished text.
  */
-export type AutoMergeMethod = "squash" | "merge" | "rebase";
+export const AUTO_MERGE_METHODS = ["squash", "merge", "rebase"] as const;
+
+export type AutoMergeMethod = (typeof AUTO_MERGE_METHODS)[number];
 
 /** Options for {@link Forge.armAutoMerge}. */
 export interface ArmAutoMergeOptions {

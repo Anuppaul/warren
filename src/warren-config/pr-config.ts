@@ -30,10 +30,13 @@
  */
 
 import { z } from "zod";
+import type { AutoMergeMethod } from "../forge/contract.ts";
+import { AUTO_MERGE_METHODS } from "../forge/contract.ts";
 
-/** Merge methods GitHub's enablePullRequestAutoMerge accepts. */
-export const AUTO_MERGE_METHODS = ["squash", "merge", "rebase"] as const;
-export type AutoMergeMethod = (typeof AUTO_MERGE_METHODS)[number];
+export type { AutoMergeMethod };
+// Re-exported so existing importers of `pr-config.ts` keep working; the
+// forge contract is the single source of truth for the merge-method list.
+export { AUTO_MERGE_METHODS };
 
 /** Merge method applied when `pr.autoMerge.method` is omitted. */
 export const DEFAULT_AUTO_MERGE_METHOD: AutoMergeMethod = "squash";

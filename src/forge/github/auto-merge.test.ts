@@ -107,6 +107,15 @@ describe("armGitHubAutoMerge", () => {
 		expect(result).toEqual({ ok: true, value: { outcome: "already_armed" } });
 	});
 
+	test("refuses not_open when the mutation races with a merged pull request", async () => {
+		const h = makeHarness();
+		const pr = await h.openPr();
+		h.stub.scriptGraphQL({ errors: [{ message: "Pull request is already merged" }] });
+		const result = await h.arm(pr);
+		expect(result.ok).toBe(false);
+		if (!result.ok) expect(result.error.reason).toBe("not_open");
+	});
+
 	test("refuses not_open on a merged pull request without calling the mutation", async () => {
 		const h = makeHarness();
 		const pr = await h.openPr();
@@ -224,6 +233,15 @@ describe("armGitHubAutoMerge", () => {
 			expect(result.error.reason).toBe("mergeability_unsettled");
 			expect(result.error.message).toBe("Pull Request is not mergeable");
 		}
+	});
+
+	test("refuses mergeability_unsettled from an unstable mutation status", async () => {
+		const h = makeHarness();
+		const pr = await h.openPr();
+		h.stub.scriptGraphQL({ errors: [{ message: "Pull request is in unstable status" }] });
+		const result = await h.arm(pr);
+		expect(result.ok).toBe(false);
+		if (!result.ok) expect(result.error.reason).toBe("mergeability_unsettled");
 	});
 
 	test("refuses not_open from a mutation closed error", async () => {
